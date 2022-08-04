@@ -3,6 +3,7 @@ import configparser
 
 
 class DataService:
+    
     def __init__(self):
         config = configparser.ConfigParser()
         config.read('db.ini')
