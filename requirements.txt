@@ -1,5 +1,5 @@
 flask~=2.2.1
 flask_cors
-py
 routes~=2.5.1
 PyMySQL~=1.0.2
+configparser

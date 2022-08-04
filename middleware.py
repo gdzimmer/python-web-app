@@ -8,8 +8,6 @@ people_info = [{'name': 'Jo Bloggs', 'age': '32', 'occupation': 'Engineer'},
                {'name': 'Jake Bloggs', 'age': '31', 'occupation': 'Builder'}]
 
 def index():
-    """this is a loading page"""
-    # This is a comment
     return 'Hello World'
 
 def db():
@@ -93,10 +91,30 @@ def read_widgets():
         widgets_dict[widget[0]]={'Name':widget[1], 'Price': str(widget[2])}
     return jsonify(widgets_dict)
 
+
 def read_widget_by_id(widget_id):
     db_widget = DATA_PROVIDER.get_widget(widget_id)
     if db_widget:
         widget = {'ID': widget_id, 'Name': db_widget[1], 'Price': str(db_widget[2])}
         return jsonify(widget)
     else:
+        abort(404)
+
+
+def create_widget():
+    try:
+        data = request.get_json(force=True)
+        name = data['name']
+        price = data['price']
+    except Exception as exc:
+        print(exc)
+        abort(400)
+
+    new_widget_id = DATA_PROVIDER.add_widget(name=name, price=price)
+
+    created_widget = DATA_PROVIDER.get_widget(new_widget_id)
+    if created_widget:
+        return jsonify({"Widget Created": str(created_widget)})
+    else:
+        # we did not find the widget by id
         abort(404)

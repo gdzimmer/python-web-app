@@ -16,7 +16,6 @@ class DataService:
         self.conn = pymysql.connect(host=host, port=port, user=user, password=password, db=database)
         self.cursor = self.conn.cursor()
 
-
     def get_widget(self, widget_id=None):
         all_widgets = []
 
@@ -32,3 +31,20 @@ class DataService:
             all_widgets = self.cursor.fetchone()
 
         return all_widgets
+
+
+    def add_widget(self, name, price):
+        sql_insert_widget = """insert into widgets (name, price) values (%s, %s)"""
+        input_values = (name, price)
+
+        try:
+            self.cursor.execute(sql_insert_widget, input_values)
+            self.conn.commit()
+        except Exception as exc:
+            self.conn.rollback()
+            print("Attempt to insert a new widget", exc)
+
+        sql_new_widget_id = "select LAST_INSERT_ID()"
+        self.cursor.execute(sql_new_widget_id)
+        widget_post_id = self.cursor.fetchone()
+        return widget_post_id
